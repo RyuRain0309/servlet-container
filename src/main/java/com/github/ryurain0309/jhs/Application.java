@@ -1,13 +1,23 @@
 package com.github.ryurain0309.jhs;
 
-import java.util.logging.Logger;
+
+import com.github.ryurain0309.jhs.server.HttpServer;
+import com.github.ryurain0309.jhs.server.SingleThreadHttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Application {
 
-    Logger logger = Logger.getLogger(getClass().getName());
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+    private static final int PORT = 8080;
 
     public static void main(String[] args) {
-        Application app = new Application();
-        app.logger.info("Hello, JHS!");
+        HttpServer server = new SingleThreadHttpServer(PORT);
+        server.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Shutting down server...");
+            server.stop();
+        }));
     }
 }
